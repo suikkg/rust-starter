@@ -111,7 +111,7 @@ Error: missing field `done` at line 5 column 3
 cargo test --example ex10
 ```
 
-`exercises/ex10_*.rs` 里有 5 道小题，每道题的函数体都是 `todo!()`，你把它换成实现。
+`exercises/ex10_*.rs` 里有 4 道小题（5 个测试），每道题的函数体都是 `todo!()`，你把它换成实现。
 
 - **一次只做一道**，做完就跑一次。红变绿的那一下就是你学会了
 - 失败信息会指到具体哪一行、期望什么、实际什么

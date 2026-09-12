@@ -58,7 +58,7 @@ cargo run
 |---|---|---|---|
 | **`src/main.rs`** | 你的待办清单程序 | `cargo run` | **每一课都在改它**，从 20 行长到 200 行 |
 | **`examples/`** | 12 个独立小实验，**读的** | `cargo run --example lesson06_ownership` | 不变，随时可以回头再跑 |
-| **`exercises/`** | 每课 4–7 道小题，**写的** | `cargo test --example ex06` | 你把里面的 `todo!()` 换成实现 |
+| **`exercises/`** | 每课 4–5 道小题，**写的** | `cargo test --example ex06` | 你把里面的 `todo!()` 换成实现 |
 
 每一课的流程是：先跑那一课的 example 看清楚概念 → 做练习让测试变绿 →
 再回到 `src/main.rs` 把它用上。
@@ -132,7 +132,7 @@ attempt to subtract with overflow
 | 11 | `mod`、`pub`、`lib.rs` | 拆成 5 个文件 |
 | 12 | 测试 + 独立加功能 | **毕业考，没有标准答案** |
 
-第 02–11 课每课都配了练习（共 49 道），课程文档末尾有入口。
+第 02–11 课每课都配了练习（共 42 道、49 个测试），课程文档末尾有入口。
 
 ### 关于第 06 课
 
