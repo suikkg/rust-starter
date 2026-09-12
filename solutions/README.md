@@ -7,6 +7,7 @@
 - `steps/lessonNN_main.rs` —— 第 NN 课结束时 `src/main.rs` 应该长的样子（全部验证过能编译）
 - `lessonNN.md` —— 这一课的关键点和常见坑
 - `final/` —— 第 11 课拆分模块之后的完整程序（5 个文件）
+- `exercises/exNN.rs` —— `exercises/` 里那些练习的答案，**带注释解释为什么这么写**
 
 对比自己的写法：
 
@@ -44,6 +45,26 @@ cargo run -- list
 rm src/lib.rs src/model.rs src/store.rs src/view.rs
 cp solutions/steps/lesson10_main.rs src/main.rs
 ```
+
+## 练习的答案
+
+`exercises/exNN_*.rs` 里的练习，答案在 `solutions/exercises/exNN.rs`。
+
+直接跑一遍（全绿）：
+
+```bash
+cargo test --example ans06
+```
+
+和自己的比：
+
+```bash
+diff exercises/ex06_ownership.rs solutions/exercises/ex06.rs
+```
+
+答案里的注释比代码本身更值得看 —— 它们解释的是**为什么选这个写法**，
+比如为什么 `pending` 要用 `saturating_sub`、为什么 `longest` 要用
+`chars().count()` 而不是 `len()`。这些是题目里问不出来、只能讲的东西。
 
 ## 关于第 12 课
 

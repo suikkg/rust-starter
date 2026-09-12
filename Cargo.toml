@@ -8,3 +8,93 @@ description = "零基础 Rust 入门：用一个命令行待办清单从头学�
 # 第 01–09 课只用标准库，下面两个依赖到第 10 课（保存数据）才会用到。
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+
+# ---------------------------------------------------------------------------
+# 练习题。放在 exercises/ 而不是 examples/，因为它们不是「读的例子」而是
+# 「写的作业」—— 每个文件里的 todo!() 都要你亲手换成实现。
+#
+#     cargo test --example ex03      跑第 03 课的练习
+#     cargo test --example ans03     看答案跑起来是什么样（全绿）
+#
+# 普通的 `cargo test` 不会跑这些，所以作业没做完也不会一片红。
+# ---------------------------------------------------------------------------
+
+[[example]]
+name = "ex02"
+path = "exercises/ex02_variables.rs"
+
+[[example]]
+name = "ex03"
+path = "exercises/ex03_flow.rs"
+
+[[example]]
+name = "ex04"
+path = "exercises/ex04_functions.rs"
+
+[[example]]
+name = "ex05"
+path = "exercises/ex05_vec.rs"
+
+[[example]]
+name = "ex06"
+path = "exercises/ex06_ownership.rs"
+
+[[example]]
+name = "ex07"
+path = "exercises/ex07_struct.rs"
+
+[[example]]
+name = "ex08"
+path = "exercises/ex08_enum_option.rs"
+
+[[example]]
+name = "ex09"
+path = "exercises/ex09_args_result.rs"
+
+[[example]]
+name = "ex10"
+path = "exercises/ex10_json.rs"
+
+[[example]]
+name = "ex11"
+path = "exercises/ex11_modules.rs"
+
+[[example]]
+name = "ans02"
+path = "solutions/exercises/ex02.rs"
+
+[[example]]
+name = "ans03"
+path = "solutions/exercises/ex03.rs"
+
+[[example]]
+name = "ans04"
+path = "solutions/exercises/ex04.rs"
+
+[[example]]
+name = "ans05"
+path = "solutions/exercises/ex05.rs"
+
+[[example]]
+name = "ans06"
+path = "solutions/exercises/ex06.rs"
+
+[[example]]
+name = "ans07"
+path = "solutions/exercises/ex07.rs"
+
+[[example]]
+name = "ans08"
+path = "solutions/exercises/ex08.rs"
+
+[[example]]
+name = "ans09"
+path = "solutions/exercises/ex09.rs"
+
+[[example]]
+name = "ans10"
+path = "solutions/exercises/ex10.rs"
+
+[[example]]
+name = "ans11"
+path = "solutions/exercises/ex11.rs"

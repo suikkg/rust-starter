@@ -102,3 +102,20 @@ Error: missing field `done` at line 5 column 3
 → JSON 和结构体字段对不上。这正是 serde 在帮你把问题指出来。
 
 参考答案：`solutions/lesson10.md`
+
+---
+
+## 练习：让测试替你验收
+
+```bash
+cargo test --example ex10
+```
+
+`exercises/ex10_*.rs` 里有 5 道小题，每道题的函数体都是 `todo!()`，你把它换成实现。
+
+- **一次只做一道**，做完就跑一次。红变绿的那一下就是你学会了
+- 失败信息会指到具体哪一行、期望什么、实际什么
+- 全绿了这一课才算过 —— 上面的验收清单靠自觉，测试不会放水
+
+答案：`solutions/exercises/ex10.rs`（先自己写 15 分钟）。想看答案跑起来什么样：
+`cargo test --example ans10`。

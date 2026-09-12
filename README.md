@@ -24,11 +24,12 @@ cargo run -- done 1
 ## 目录
 
 - [先跑起来](#先跑起来)
-- [这个项目由两部分组成](#这个项目由两部分组成)
+- [这个项目由三部分组成](#这个项目由三部分组成)
 - [每一课怎么上](#每一课怎么上)
 - [12 课](#12-课)
 - [进度表](#进度表)
 - [常用命令](#常用命令)
+- [速查卡](#速查卡)
 - [卡住的时候](#卡住的时候)
 - [报错速查](#报错速查)
 - [环境](#环境)
@@ -49,27 +50,64 @@ cargo run
 
 然后打开 **`lessons/01_第一次运行.md`**，从那里开始。
 
-## 这个项目由两部分组成
+## 这个项目由三部分组成
 
 这是最该先搞清楚的事：
 
 | | 是什么 | 怎么跑 | 会不会变 |
 |---|---|---|---|
 | **`src/main.rs`** | 你的待办清单程序 | `cargo run` | **每一课都在改它**，从 20 行长到 200 行 |
-| **`examples/`** | 12 个独立小实验 | `cargo run --example lesson06_ownership` | 不变，随时可以回头再跑 |
+| **`examples/`** | 12 个独立小实验，**读的** | `cargo run --example lesson06_ownership` | 不变，随时可以回头再跑 |
+| **`exercises/`** | 每课 4–7 道小题，**写的** | `cargo test --example ex06` | 你把里面的 `todo!()` 换成实现 |
 
-每一课的流程是：先跑那一课的 example 看清楚概念，再回到 `src/main.rs` 把它用上。
+每一课的流程是：先跑那一课的 example 看清楚概念 → 做练习让测试变绿 →
+再回到 `src/main.rs` 把它用上。
 
-**例子是拿来读和改坏的，`src/main.rs` 才是你的作品。**
+**例子是拿来读和改坏的，练习是拿来写的，`src/main.rs` 才是你的作品。**
+
+### 练习为什么用测试
+
+前面的验收清单是「自己对着打勾」，容易放水，而且写错了不一定当场看得出来。
+练习不一样：
+
+```bash
+cargo test --example ex04
+```
+
+第一次跑，全部是红的 —— 因为函数体还是 `todo!()`：
+
+```text
+thread 'tests::剩余条数' panicked at exercises/ex04_functions.rs:24:5:
+not yet implemented
+```
+
+然后你顺手写了 `total - done`，再跑一次：
+
+```text
+---- tests::数据坏了也不崩溃 stdout ----
+thread 'tests::数据坏了也不崩溃' panicked at exercises/ex04_functions.rs:24:5:
+attempt to subtract with overflow
+```
+
+`u32` 减成负数会崩溃 —— 这个坑你自己盯着代码看十分钟也未必想得到，
+测试三秒钟就替你撞出来了。哪一行、什么原因，一目了然。
+
+**红变绿的那一下，就是你真的学会了那个点。**
+
+普通的 `cargo test` **不会**跑这些练习，所以作业没做完也不会看到一片红。
 
 ## 每一课怎么上
 
-固定四步，别跳：
+固定五步，别跳：
 
 1. **跑实验** —— `cargo run --example lessonNN_xxx`，先看到这个概念在干什么
 2. **读课程** —— `lessons/NN_*.md`，只讲今天这一个概念
-3. **改程序** —— 按课程末尾的「动手任务」改 `src/main.rs`
-4. **验收** —— 对着「验收」清单逐条打勾，全过了再进下一课
+3. **做练习** —— `cargo test --example exNN`，一次做一道，跑到全绿
+4. **改程序** —— 按课程末尾的「动手任务」改 `src/main.rs`
+5. **验收** —— 对着「验收」清单逐条打勾，全过了再进下一课
+
+第 3 步和第 4 步的区别：练习是**单个概念的小题**，`src/main.rs` 是
+**把概念用进自己的作品**。只做练习不改程序，学到的东西是散的。
 
 **每天 30–60 分钟，一课通常一到两天。** 第 06 课（所有权）花三天也正常。
 
@@ -93,6 +131,8 @@ cargo run
 | 10 | 文件、JSON、serde | 关掉程序数据还在 |
 | 11 | `mod`、`pub`、`lib.rs` | 拆成 5 个文件 |
 | 12 | 测试 + 独立加功能 | **毕业考，没有标准答案** |
+
+第 02–11 课每课都配了练习（共 49 道），课程文档末尾有入口。
 
 ### 关于第 06 课
 
@@ -123,6 +163,8 @@ cargo run
 - [ ] 11 模块拆分
 - [ ] 12 测试与独立扩展 ← 毕业考
 
+打勾的标准：验收清单全过 **且** 那一课的 `cargo test --example exNN` 全绿。
+
 **上一课的验收清单没全过，就不要进下一课。** 后面每一课都建立在前面之上。
 
 ## 常用命令
@@ -142,12 +184,16 @@ cargo run -- add "任务名"      # -- 后面的才是给程序的
 cargo run -- list
 ```
 
-跑某一课的小实验：
+跑某一课的小实验和练习：
 
 ```bash
-cargo run --example lesson06_ownership
-cargo test --example lesson12_tests     # 第 12 课那个要用 test 跑
+cargo run --example lesson06_ownership   # 读的例子
+cargo test --example ex06                # 写的练习（第 02–11 课）
+cargo test --example ans06               # 练习的答案，跑起来是全绿的
+cargo test --example lesson12_tests      # 第 12 课那个例子要用 test 跑
 ```
+
+`exNN` 和 `ansNN` 里的 NN 就是课号。
 
 ### clippy 是你的第二个老师
 
@@ -160,6 +206,14 @@ cargo clippy
 
 **这个项目现在是 clippy 零告警的。** 你改完代码如果冒出告警，
 多半真的有更好的写法 —— 值得看一眼。
+
+## 速查卡
+
+**[`CHEATSHEET.md`](CHEATSHEET.md)** —— 12 课用得到的全部语法，按课号排。
+
+写代码时忘了 `Option` 有哪些方法、参数该写 `&str` 还是 `String`、
+`match` 怎么写全分支，翻它比翻课程快。刻意只收这 12 课的东西，
+**不全面是故意的** —— 速查卡一长就没人看了。
 
 ## 卡住的时候
 
@@ -190,9 +244,14 @@ help: consider cloning the value if the performance cost is acceptable
 一条报错里有四样东西：**哪一行错了、在哪被移走的、为什么、怎么改**。
 养成每条都看完的习惯，你会发现大部分问题不用查资料。
 
-**2. 回头看那一课的「常见错误」。** 每课末尾都有。
+**2. 回头看那一课的「常见错误」。** 每课末尾都有，`CHEATSHEET.md` 里也有语法速查。
 
 **3. 看 `solutions/`。** 但先自己试 15 分钟。
+练习的答案在 `solutions/exercises/exNN.rs`，可以直接 `diff`：
+
+```bash
+diff exercises/ex06_ownership.rs solutions/exercises/ex06.rs
+```
 
 **4. 改坏了想重来**：
 
@@ -235,14 +294,18 @@ cargo --version    # 1.96.0
 ```
 rust-starter/
 ├── lessons/          12 课的课程文档 ← 主线，按顺序看
-├── examples/         12 个独立小实验，可以直接跑
+├── examples/         12 个独立小实验，读的
+├── exercises/        第 02–11 课的练习，写的（cargo test --example exNN）
 ├── src/main.rs       你的待办清单程序，每课都在改它
 ├── solutions/
 │   ├── steps/        第 01–10 课结束时 main.rs 该长什么样
 │   ├── final/        第 11 课拆完模块的完整程序（5 个文件）
+│   ├── exercises/    练习的答案（cargo test --example ansNN）
 │   ├── lessonNN.md   每课的要点和常见坑
 │   └── README.md     怎么用答案
 ├── tests/            第 12 课才会用到
+├── CHEATSHEET.md     语法速查卡
+├── check.sh          一键自检：fmt + clippy + 全部答案
 └── Cargo.toml
 ```
 
