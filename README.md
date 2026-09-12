@@ -39,7 +39,7 @@ cargo run -- done 1
 ## 先跑起来
 
 ```bash
-cd /Users/kk/rust/rust-starter
+cd rust-starter
 cargo run
 ```
 
@@ -258,7 +258,7 @@ rust-starter/
 - 把程序拆成几个模块
 - 写测试保护自己的改动
 
-**下一站**：`/Users/kk/rust/cpe-mini` —— 同样的能力，用到真实业务上。
+**下一站**：隔壁的 `cpe-mini` —— 同样的能力，用到真实业务上。
 那边不是从零写，而是读懂一份现成代码再改它，这正是维护真实项目的工作方式。
 
 不必等这里全部做完。**学到第 07 课（struct）之后就可以并行开始。**
