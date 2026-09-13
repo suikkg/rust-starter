@@ -66,6 +66,20 @@ diff exercises/ex06_ownership.rs solutions/exercises/ex06.rs
 比如为什么 `pending` 要用 `saturating_sub`、为什么 `longest` 要用
 `chars().count()` 而不是 `len()`。这些是题目里问不出来、只能讲的东西。
 
+## 补充课 13–15
+
+主线是 01–12。13–15 是**毕业之后**的补充课，讲前面刻意没讲、
+但真实 Rust 代码里满屏都是的三样东西：
+
+| 课 | 答案 |
+|---|---|
+| 13 闭包与迭代器 | `lesson13.md` + `exercises/ex13.rs` |
+| 14 HashMap | `lesson14.md` + `exercises/ex14.rs` |
+| 15 trait 入门 | `lesson15.md` + `exercises/ex15.rs` |
+
+这三课的答案文档里，「练习里的坑」那一节最值得看 ——
+每一条都是真会撞上的编译错误，以及它到底在说什么。
+
 ## 关于第 12 课
 
 `lesson12.md` 只有**任务 A（写测试）**的要点。

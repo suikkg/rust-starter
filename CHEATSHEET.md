@@ -1,6 +1,6 @@
 # Rust 语法速查卡
 
-每天开工前扫一眼，写代码时忘了就翻这里。**只收这 12 课用得到的**，
+每天开工前扫一眼，写代码时忘了就翻这里。**只收这 15 课用得到的**，
 不全面是故意的 —— 速查卡一长就没人看了。
 
 括号里是「这在第几课讲」。
@@ -286,6 +286,95 @@ mod tests {
 
 写在被测代码同一个文件里 = 单元测试，**能测到私有函数**。
 放在 `tests/` 目录 = 集成测试，只能用 `pub` 的东西。
+
+## 闭包与迭代器（13）
+
+```rust
+let f = |x: u32| x + 1;         // 闭包 = 没名字的函数
+let keyword = "所有权";
+let g = |t: &Task| t.title.contains(keyword);   // 能抓外面的变量
+
+tasks.iter()                    // &T    原列表还能用
+tasks.iter_mut()                // &mut T
+tasks.into_iter()               // T     原列表被吃掉
+
+.count()                        // 有几条
+.filter(|t| !t.done)            // 只留符合的（闭包拿到的是 &&T）
+.map(|t| t.title.clone())       // 每条变成别的
+.find(|t| t.id == 3)            // 第一个 → Option<&T>
+.any(|t| !t.done)               // 有没有 → bool
+.all(|t| t.done)                // 是不是全都 → bool
+.max_by_key(|t| t.title.chars().count())
+.sum::<usize>()                 // 加起来
+.for_each(|t| println!("{t}"))
+.collect::<Vec<_>>()            // 收成 Vec
+
+fn f(g: impl Fn(&str) -> String)    // 把闭包当参数收
+```
+
+**迭代器是懒的**：没有 `collect` / `count` / `sum` / `for_each`，它根本不动。
+
+**`collect` 要你说清楚收成什么**：`let v: Vec<u32> = ...` 或 `.collect::<Vec<u32>>()`。
+
+**`.map(|t| t.title)` 编译不过**：`t` 是借来的，搬不走 → `.clone()`。
+
+## HashMap（14）
+
+```rust
+use std::collections::{HashMap, BTreeMap};
+
+let mut m: HashMap<String, u32> = HashMap::new();
+m.insert("工作".into(), 3);
+
+m.get("工作")                    // Option<&u32>
+m.get("旅游").copied().unwrap_or(0)   // 取不到给 0
+m["旅游"]                        // 💥 键不存在会崩
+
+*m.entry(k).or_insert(0) += 1;        // 计数
+m.entry(k).or_default().push(v);      // 分组
+
+m.len()  m.contains_key(k)  m.remove(k)
+for (k, v) in &m { }             // ⚠️ 顺序是乱的
+```
+
+**`HashMap` 的遍历顺序每次都可能不同。** 要输出 / 存文件 / 做对比，
+要么先 `keys()` 收出来 `sort()`，要么直接用 `BTreeMap`（永远按 key 排好）。
+
+`f64` 不能当 key（`NaN != NaN`）。
+
+## trait（15）
+
+```rust
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
+
+// Display 要自己写；写了之后 to_string() 白送
+use std::fmt;
+impl fmt::Display for Task {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "[{}] {}", self.id, self.title)   // ← 没有分号
+    }
+}
+
+// From 让 ? 能跨错误类型
+impl From<std::io::Error> for AppError {
+    fn from(e: std::io::Error) -> Self { AppError::Io(e) }
+}
+
+fn f<T: fmt::Display>(x: T)     // 泛型约束
+fn f(x: impl fmt::Display)      // 一样的意思
+```
+
+| trait | 给你什么 |
+|---|---|
+| `Debug` | `{:?}` |
+| `Display` | `{}` + `.to_string()`（**要自己写**） |
+| `Clone` / `Copy` | `.clone()` / 赋值不搬走 |
+| `PartialEq` / `Ord` | `==` / 能排序 |
+| `From` | `?` 自动转错误 |
+| `Default` | `Default::default()` |
+
+**enum 的声明顺序就是排序顺序。** 挪一个变体，所有排序行为都变，
+而且编译器不会说话。
 
 ## 命令
 

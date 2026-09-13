@@ -1,6 +1,7 @@
 # rust-starter —— 零基础 Rust 入门
 
 用 12 课，从 `println!` 写到一个真能用的命令行待办清单。
+毕业之后还有 3 课补充，补齐读真实代码要用的那几样东西。
 
 ```bash
 cargo run -- add "学习 Rust 变量"
@@ -26,7 +27,7 @@ cargo run -- done 1
 - [先跑起来](#先跑起来)
 - [这个项目由三部分组成](#这个项目由三部分组成)
 - [每一课怎么上](#每一课怎么上)
-- [12 课](#12-课)
+- [12 课 + 3 课补充](#12-课--3-课补充)
 - [进度表](#进度表)
 - [常用命令](#常用命令)
 - [速查卡](#速查卡)
@@ -59,6 +60,9 @@ cargo run
 | **`src/main.rs`** | 你的待办清单程序 | `cargo run` | **每一课都在改它**，从 20 行长到 200 行 |
 | **`examples/`** | 12 个独立小实验，**读的** | `cargo run --example lesson06_ownership` | 不变，随时可以回头再跑 |
 | **`exercises/`** | 每课 4–5 道小题，**写的** | `cargo test --example ex06` | 你把里面的 `todo!()` 换成实现 |
+
+（`examples/` 有 15 个，01–15 每课一个；`exercises/` 有 13 个，
+第 01 课和第 12 课没有练习。）
 
 每一课的流程是：先跑那一课的 example 看清楚概念 → 做练习让测试变绿 →
 再回到 `src/main.rs` 把它用上。
@@ -115,7 +119,7 @@ attempt to subtract with overflow
 特别是那些让你**故意把代码改坏**的步骤。看着编译器报错、读懂它、再修好，
 这个循环就是学 Rust 最快的路。跳过它，后面一定会卡。
 
-## 12 课
+## 12 课 + 3 课补充
 
 | 课 | 学什么 | 学完之后程序能做什么 |
 |---|---|---|
@@ -132,7 +136,19 @@ attempt to subtract with overflow
 | 11 | `mod`、`pub`、`lib.rs` | 拆成 5 个文件 |
 | 12 | 测试 + 独立加功能 | **毕业考，没有标准答案** |
 
-第 02–11 课每课都配了练习（共 42 道、49 个测试），课程文档末尾有入口。
+主线到 12 课就毕业了。后面三课是**补充课**，讲前面刻意没讲、
+但真实 Rust 代码里满屏都是的三样东西：
+
+| 课 | 学什么 | 为什么值得学 |
+|---|---|---|
+| 13 | 闭包与迭代器 `\|x\|` / `map` / `filter` / `collect` | 真实项目 cpe-test 里 `.iter()` 出现 **841 次**、`.map(` **609 次** |
+| 14 | `HashMap` / `BTreeMap` | 出现 **111 次**；顺带讲「遍历顺序是乱的」这个大坑 |
+| 15 | trait 入门：`Display` / 派生排序 / `From` | 解释第 09 课那个 `?` 号到底怎么跨类型工作的 |
+
+**这三课是隔壁 `cpe-mini` 的入场券。** 不会这四样写法，那份代码读不下去。
+不急着做 —— 主线 12 课先走完。
+
+第 02–11、13–15 课每课都配了练习（共 **56 道、77 个测试**），课程文档末尾有入口。
 
 ### 关于第 06 课
 
@@ -163,6 +179,12 @@ attempt to subtract with overflow
 - [ ] 11 模块拆分
 - [ ] 12 测试与独立扩展 ← 毕业考
 
+毕业之后（不急，可以隔几天再回来）：
+
+- [ ] 13 闭包与迭代器
+- [ ] 14 HashMap
+- [ ] 15 trait 入门
+
 打勾的标准：验收清单全过 **且** 那一课的 `cargo test --example exNN` 全绿。
 
 **上一课的验收清单没全过，就不要进下一课。** 后面每一课都建立在前面之上。
@@ -188,7 +210,7 @@ cargo run -- list
 
 ```bash
 cargo run --example lesson06_ownership   # 读的例子
-cargo test --example ex06                # 写的练习（第 02–11 课）
+cargo test --example ex06                # 写的练习（第 02–11、13–15 课）
 cargo test --example ans06               # 练习的答案，跑起来是全绿的
 cargo test --example lesson12_tests      # 第 12 课那个例子要用 test 跑
 ```
@@ -209,10 +231,10 @@ cargo clippy
 
 ## 速查卡
 
-**[`CHEATSHEET.md`](CHEATSHEET.md)** —— 12 课用得到的全部语法，按课号排。
+**[`CHEATSHEET.md`](CHEATSHEET.md)** —— 15 课用得到的全部语法，按课号排。
 
 写代码时忘了 `Option` 有哪些方法、参数该写 `&str` 还是 `String`、
-`match` 怎么写全分支，翻它比翻课程快。刻意只收这 12 课的东西，
+`match` 怎么写全分支，翻它比翻课程快。刻意只收这 15 课的东西，
 **不全面是故意的** —— 速查卡一长就没人看了。
 
 ## 卡住的时候
@@ -274,6 +296,10 @@ cp solutions/steps/lesson07_main.rs src/main.rs     # 回到第 07 课的完成�
 | `non-exhaustive patterns` | `match` 漏了分支 | 按提示补上 | 08 |
 | `the ? operator can only be used in a function that returns Result` | 在 `main` 里用了 `?` | 逻辑搬进返回 `Result` 的函数 | 09 |
 | `index out of bounds` | 下标越界（运行时崩溃） | 用 `.get()` 代替 `[i]` | 05 |
+| `cannot move out of ... behind a shared reference` | 想从借来的东西里搬走 | 加 `.clone()` | 13 |
+| `type annotations needed` | `collect()` 不知道收成什么 | 加 `: Vec<...>` | 13 |
+| `doesn't implement std::fmt::Display` | 用 `{}` 打印了没实现 Display 的类型 | 改 `{:?}`，或自己实现 | 15 |
+| `` `?` couldn't convert the error`` | 缺 `From` 实现 | `impl From<下层错误> for 本层错误` | 15 |
 
 ## 环境
 
@@ -293,9 +319,9 @@ cargo --version    # 1.96.0
 
 ```
 rust-starter/
-├── lessons/          12 课的课程文档 ← 主线，按顺序看
-├── examples/         12 个独立小实验，读的
-├── exercises/        第 02–11 课的练习，写的（cargo test --example exNN）
+├── lessons/          12 课主线 + 3 课补充 ← 按顺序看
+├── examples/         15 个独立小实验，读的
+├── exercises/        第 02–11、13–15 课的练习，写的（cargo test --example exNN）
 ├── src/main.rs       你的待办清单程序，每课都在改它
 ├── solutions/
 │   ├── steps/        第 01–10 课结束时 main.rs 该长什么样
@@ -320,6 +346,12 @@ rust-starter/
 - 读写文件、存取 JSON
 - 把程序拆成几个模块
 - 写测试保护自己的改动
+
+做完补充课 13–15 还能：
+
+- 读懂 `.iter().filter(|t| !t.done).count()` 这类链式写法
+- 用 `HashMap` 按名字组织数据，并且知道为什么输出前必须排序
+- 给自己的类型实现 `Display`，用 `From` 让 `?` 跨错误类型
 
 **下一站**：隔壁的 `cpe-mini` —— 同样的能力，用到真实业务上。
 那边不是从零写，而是读懂一份现成代码再改它，这正是维护真实项目的工作方式。

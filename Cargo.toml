@@ -98,3 +98,27 @@ path = "solutions/exercises/ex10.rs"
 [[example]]
 name = "ans11"
 path = "solutions/exercises/ex11.rs"
+
+[[example]]
+name = "ex13"
+path = "exercises/ex13_closures.rs"
+
+[[example]]
+name = "ans13"
+path = "solutions/exercises/ex13.rs"
+
+[[example]]
+name = "ex14"
+path = "exercises/ex14_hashmap.rs"
+
+[[example]]
+name = "ans14"
+path = "solutions/exercises/ex14.rs"
+
+[[example]]
+name = "ex15"
+path = "exercises/ex15_trait.rs"
+
+[[example]]
+name = "ans15"
+path = "solutions/exercises/ex15.rs"
