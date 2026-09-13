@@ -44,7 +44,7 @@ enum Option<T> {
 "按编号找任务"可能找不到，所以返回 `Option`：
 
 ```rust
-fn find_mut(tasks: &mut Vec<Task>, id: u32) -> Option<&mut Task> {
+fn find_mut(tasks: &mut [Task], id: u32) -> Option<&mut Task> {
     tasks.iter_mut().find(|t| t.id == id)
 }
 
@@ -102,7 +102,8 @@ let n = "42".parse::<u32>().unwrap_or(0);
 
 1. 定义 `enum Command { Add(String), Done(u32), List }`
 2. 在 `main` 里放一个 `Vec<Command>`，按顺序处理（下一课才接真正的命令行）
-3. 写 `fn find_mut(tasks: &mut Vec<Task>, id: u32) -> Option<&mut Task>`
+3. 写 `fn find_mut(tasks: &mut [Task], id: u32) -> Option<&mut Task>`
+   （第 06 课那条：只改内容不增删条数，收 `&mut [T]` 就够，比 `&mut Vec<T>` 通用）
 4. `Done(99)` 这种找不到的情况要打印"找不到编号 99"，**不能崩溃**
 
 ## 6. 验收
