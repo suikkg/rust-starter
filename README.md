@@ -296,10 +296,29 @@ cp solutions/steps/lesson07_main.rs src/main.rs     # 回到第 07 课的完成�
 | `non-exhaustive patterns` | `match` 漏了分支 | 按提示补上 | 08 |
 | `the ? operator can only be used in a function that returns Result` | 在 `main` 里用了 `?` | 逻辑搬进返回 `Result` 的函数 | 09 |
 | `index out of bounds` | 下标越界（运行时崩溃） | 用 `.get()` 代替 `[i]` | 05 |
+| `` `if` may be missing an `else` clause`` | `if` 当值用却没写 `else` | 补上 `else` | 03 |
+| `cannot find value X in this scope` | 变量定义在大括号里面了 | 挪到循环/`if` 外面去定义 | 03 |
+| `cannot add f64 to u32` | 两个类型不一样 | 给其中一个加 `as f64` | 02 |
+| `type annotations needed` | `parse()` / `collect()` 不知道转成什么 | `parse::<u32>()` 或给变量标类型 | 08 / 13 |
 | `cannot move out of ... behind a shared reference` | 想从借来的东西里搬走 | 加 `.clone()` | 13 |
 | `type annotations needed` | `collect()` 不知道收成什么 | 加 `: Vec<...>` | 13 |
 | `doesn't implement std::fmt::Display` | 用 `{}` 打印了没实现 Display 的类型 | 改 `{:?}`，或自己实现 | 15 |
 | `` `?` couldn't convert the error`` | 缺 `From` 实现 | `impl From<下层错误> for 本层错误` | 15 |
+
+### 不报错、但结果是错的
+
+编译器管不到这几个。撞上了会怀疑人生，先来这里对一眼：
+
+| 现象 | 真正的原因 | 哪一课 |
+|---|---|---|
+| 完成率永远是 `0` 或 `1` | 整数除法把小数扔了，要 `as f64` **先转再除** | 02 |
+| 程序卡住 / 终端刷屏 | 死循环，`while` 的条件变量忘了改。Ctrl+C | 03 |
+| 计数器永远是 1 或 0 | `let mut n = 0` 写在循环**里面**了，每轮重置 | 03 |
+| 中文标题总被判成「更长」 | `len()` 是字节数，要 `chars().count()` | 05 |
+| 调了 `to_uppercase()` 原件没变 | 那个方法**造新件**，不动原件 | 06 |
+| 报告/清单每次跑顺序都不同 | `HashMap` 遍历顺序是乱的，输出前要排序 | 14 |
+
+**这一类比编译错误贵得多** —— 编译错误当场拦住你，这些会一路跑到用户面前。
 
 ## 环境
 

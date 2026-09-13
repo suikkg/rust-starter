@@ -22,6 +22,39 @@ titles.remove(0)    // 删掉第 1 条
 
 `Vec<String>` 读作"装 String 的列表"。尖括号里是元素类型。
 
+`vec![...]` 是"直接给一批初始值"的简写：
+
+```rust
+let titles = vec![String::from("甲"), String::from("乙")];
+```
+
+### 顺手要会的几个字符串方法
+
+列表里装的是字符串，所以这几个马上就用得上：
+
+```rust
+title.len()               // **字节数**，不是字数
+title.chars().count()     // 字符数（中文要用这个）
+title.is_empty()          // 是不是空串
+title.starts_with("学习")  // 开头是不是这个
+title.contains("Rust")    // 里面有没有这个
+title.trim()              // 去掉首尾空白
+```
+
+**`len()` 是字节数这件事必须现在就记住：**
+
+```rust
+"abcd".len()              // 4
+"学习编程".len()           // 12 ← 每个汉字 3 字节
+"学习编程".chars().count() // 4  ← 这才是"四个字"
+```
+
+比较标题长短、截断显示、算"超过 10 个字"，全都要用 `chars().count()`。
+用 `len()` 的话，四个汉字会被判成比八个字母还长。
+
+（顺带：**中文字符串不能用 `title[0..3]` 切**，切到半个字会当场崩溃。
+真要按字符取，用 `chars()`。）
+
 ## 3. 遍历
 
 ```rust
@@ -67,6 +100,14 @@ cargo run
 error[E0382]: borrow of moved value: `titles`
 ```
 → `for` 后面漏了 `&`，列表被循环吃掉了。
+
+```
+error[E0277]: the type `str` cannot be indexed by `{integer}`
+```
+→ 字符串不能用 `s[0]` 取单个字符。用 `.chars().nth(0)`，或者先想想是不是真的需要。
+
+**还有一个不报错的：** 按 `len()` 比长短，中文标题总是"更长"。
+那是字节数不是字数，见第 2 节。
 
 参考答案：`solutions/lesson05.md`
 

@@ -34,7 +34,28 @@ fn main() {
     let name: String = String::from("kk"); // 可增长的字符串
     println!("{name} 有 {count} 条任务，完成率 {ratio}");
 
-    // 【动手】把 mut 从 completed 前面删掉，再运行一次。
-    // 编译器会报错 cannot assign twice to immutable variable。
-    // 读懂这句话，再把 mut 加回来。
+    println!("---");
+
+    // 数字上的坑一：整数相除，小数部分被**扔掉**，不是四舍五入
+    let done = 3;
+    let total = 4;
+    println!("3 / 4 在整数里 = {}", done / total); // 0，不是 0.75
+    println!("7 / 2 在整数里 = {}", 7 / 2); // 3
+
+    // 坑二：类型不会自动转，要自己写 as
+    // 用 {:.2} 保留两位小数，不然 0.0 会被打印成 "0"，看不出差别
+    println!("先转再除 = {:.2}", done as f64 / total as f64); // 0.75 ✓
+    println!("先除再转 = {:.2}", (done / total) as f64); // 0.00 ✗
+
+    // 位置很要紧：整数除完已经是 0 了，再转成 f64 也只是 0.0。
+    // 算完成率、百分比的时候撞上这个，结果永远是 0 或 1，
+    // 而且**编译器一个字都不会说** —— 它是合法代码，只是不是你想要的。
+
+    // 【动手】1. 把 mut 从 completed 前面删掉，再运行一次。
+    //           编译器会报错 cannot assign twice to immutable variable。
+    //           读懂这句话，再把 mut 加回来。
+    //
+    //        2. 在上面加一行 `let bad = count + ratio;`（i32 加 f64），
+    //           看报错。然后改成 `count as f64 + ratio`。
+    //           Rust 宁可让你多写四个字，也不肯帮你猜 —— 这是好事。
 }

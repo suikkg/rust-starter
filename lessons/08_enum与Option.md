@@ -59,7 +59,39 @@ match find_mut(&mut tasks, id) {
 ```rust
 opt.unwrap_or("默认值")       // 没有就用默认值
 opt.is_some()                // 有没有
+opt.map(|t| t.title.clone()) // 有值就变换一下，还是 Option
 if let Some(t) = opt { }     // 只关心有值的情况
+```
+
+**不要用 `.unwrap()`。** 它的意思是「我保证有，没有就让程序崩掉」——
+在写给别人用的程序里，这句保证几乎总会被打脸。
+`unwrap_or` / `match` / `if let` 才是正路。
+
+### 把字符串变成数字：`parse`
+
+用户从命令行敲进来的永远是字符串。转数字可能失败，所以 `parse` 返回
+`Result`（第 09 课细讲）：
+
+```rust
+let n: Result<u32, _> = "42".parse();     // Ok(42)
+let n: Result<u32, _> = "四二".parse();    // Err(...)
+```
+
+`Result` 和 `Option` 是一对表兄弟：都表示「可能没有」，
+区别是 `Result` 的失败分支**带着原因**，`Option` 的 `None` 什么都不带。
+
+只关心成不成、不关心为什么，用 `.ok()` 把 `Result` 降级成 `Option`：
+
+```rust
+let id: Option<u32> = "42".parse().ok();       // Some(42)
+let id: Option<u32> = "四二".parse().ok();      // None
+```
+
+写 `parse` 时常常要说清楚转成什么类型，两种写法任选：
+
+```rust
+let n: u32 = "42".parse().unwrap_or(0);
+let n = "42".parse::<u32>().unwrap_or(0);
 ```
 
 **`.unwrap()` 会在 `None` 时直接崩溃，练习之外不要用。**
@@ -89,6 +121,11 @@ cargo run
 error[E0004]: non-exhaustive patterns: `Command::Remove(_)` not covered
 ```
 → `match` 漏了一个分支。这是好事，按提示补上。
+
+```
+error[E0282]: type annotations needed
+```
+→ `parse()` 不知道要转成什么类型。写成 `parse::<u32>()`，或者给变量标类型。
 
 参考答案：`solutions/lesson08.md`
 

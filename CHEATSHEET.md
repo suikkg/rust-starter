@@ -38,21 +38,44 @@ let n: u32 = 3;
 let f = n as f64 / 4.0;     // 先转再除；n / 4 是整数除法，得 0
 ```
 
+### 数字上的两个坑（02）
+
+```rust
+3 / 4                      // 0  ← 整数除法把小数扔掉，不是四舍五入
+done as f64 / total as f64 // 0.75 ✓  先转再除
+(done / total) as f64      // 0.00 ✗  先除再转，已经晚了
+
+let c = a as f64 + b;      // 类型不会自动转，要自己写 as
+```
+
+「完成率永远是 0」十次有九次是这个。**编译器不会提醒**——它是合法代码。
+
 ## 判断与循环（03）
 
 ```rust
-if done { ... } else if x > 3 { ... } else { ... }
+if done { } else if overdue { } else { }
 
-let mark = if done { "✓" } else { " " };   // if 当值用，分支里不带分号
+let mark = if done { "✓" } else { " " };   // 当值用；else 不能省，里面不加分号
 
-for i in 1..=3 { }          // 1、2、3（含末尾）
-for i in 1..3 { }           // 1、2（不含）
-for t in &tasks { }         // 遍历借用，tasks 之后还能用
-for (i, t) in tasks.iter().enumerate() { }   // 要下标时
+a == b   a != b   a > b   a >= b          // == 是两个等号
+a && b   a || b   !a                      // 都成立 / 至少一个 / 取反
 
-while left > 0 { left -= 1; }
-loop { break; }             // 无限循环，靠 break 出来
+for i in 1..=3 { }        // 1 2 3     ..= 含末尾
+for i in 1..3  { }        // 1 2       ..  不含
+for t in &titles { }      // 遍历集合，记得加 &
+
+while left > 0 { left -= 1; }   // 忘了 -= 就是死循环，Ctrl+C 停
+
+loop {                    // 无条件转，出口靠 break
+    if done { break; }
+}
+
+continue;                 // 跳过这一轮
+break;                    // 整个循环到此为止
 ```
+
+**数数的三步**：循环**外面**定义 `let mut n = 0;` → 循环里面 `n += 1;` →
+循环外面用它。定义写进循环里，出了大括号就不存在（E0425）。
 
 ## 函数（04）
 
@@ -82,9 +105,16 @@ s.starts_with("前缀")
 s.contains("中")
 s.to_uppercase()
 s.split(' ')             // 切成迭代器
+s.split_once(' ')        // Option<(&str, &str)>，切不到是 None
+s.find(' ')              // Option<usize>
+s.replace("a", "b")
 s.push_str("追加")        // 要 mut
 &s                       // String → &str（自动的）
 ```
+
+比长短、截断显示、判断「超过 N 个字」，**一律 `chars().count()`**。
+用 `len()` 的话四个汉字（12）会被判成比八个字母（8）还长。
+中文也不能 `s[0..3]` 这样切，会切到半个字然后崩。
 
 ## Vec（05）
 
@@ -132,6 +162,21 @@ fn f(s: String) { }     // 把值吃掉，调用方之后用不了
 | 要改列表（push/remove） | `&mut Vec<T>` |
 | 只改元素内容，不增删 | `&mut [T]` |
 | 要把值留下 | `T` |
+
+### 动原件 还是 造新件
+
+| 方法 | 动原件？ | 返回 |
+|---|---|---|
+| `s.push_str("x")` / `s.push('x')` / `s.clear()` | **动** | 不返回 |
+| `s.to_uppercase()` / `to_lowercase()` / `replace()` | 不动 | 新 `String` |
+| `s.trim()` | 不动 | `&str` |
+
+```rust
+fn add_suffix(t: &mut String, x: &str)   // 改原件：&mut，不返回
+fn shout(t: &str) -> String              // 造新件：&，返回新的
+```
+
+**看签名就知道它会不会动你的数据。**
 
 ## struct（07）
 
@@ -195,6 +240,15 @@ found.map(|t| t.title.clone())          // 有值才变换
 found.is_some()  found.is_none()
 found.unwrap()                          // None 时崩溃 ← 尽量别用
 ```
+
+```rust
+"42".parse::<u32>()          // Result<u32, _>
+"42".parse::<u32>().ok()     // Option<u32>，不关心失败原因时用
+let n: u32 = s.parse().unwrap_or(0);
+```
+
+**别用 `.unwrap()`**：那是「我保证有，没有就崩」。
+用 `unwrap_or` / `match` / `if let`。
 
 ## Result 与 ?（09）
 
