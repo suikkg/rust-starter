@@ -182,6 +182,21 @@ fn shout(t: &str) -> String              // 造新件：&，返回新的
 ## struct（07）
 
 ```rust
+impl Task {
+    fn new(id: u32) -> Self { Self { id, done: false } }  // Self = 当前类型
+    //                                   ^^ 字段名==变量名时可省略值
+}
+```
+
+| 第一个参数 | 怎么调 | 调完还能用吗 |
+|---|---|---|
+| 没有 self（关联函数） | `Task::new(1)` | —— |
+| `&self` | `t.line()` | ✅ |
+| `&mut self` | `t.finish()` | ✅（被改了） |
+| `self` | `t.into_x()` | ❌ 吃掉自己 |
+
+
+```rust
 struct Task {
     id: u32,
     title: String,
@@ -308,6 +323,21 @@ let tasks: Vec<Task> = serde_json::from_str(&text)?;
 ## 模块（11）
 
 ```rust
+pub            // 谁都能看见
+pub(crate)     // 只有本包能看见   ← 真实项目里很常见
+pub(super)     // 只有父模块能看见
+（不写）        // 只有本模块和子模块
+
+use crate::model::Task;              // crate = 包的根，最常用
+use super::Task;                     // 上一层
+use crate::model::{Task, Priority};  // 一次引入多个
+```
+
+**能私有就私有**：标了 `pub` 就是承诺，没标的随时能改。
+新建 `.rs` 却报 `unresolved module` → `lib.rs` 里漏了 `pub mod xxx;`。
+
+
+```rust
 // src/lib.rs
 pub mod model;
 pub mod store;
@@ -339,8 +369,17 @@ mod tests {
 }
 ```
 
-写在被测代码同一个文件里 = 单元测试，**能测到私有函数**。
-放在 `tests/` 目录 = 集成测试，只能用 `pub` 的东西。
+```bash
+cargo test -- --nocapture    # 让测试里的 println! 显示出来
+```
+
+写在被测代码同一个文件里 = 单元测试，**能测到私有函数**，盯单个函数。
+放在 `tests/` 目录 = 集成测试，只能用 `pub` 的，盯**模块之间的接缝**。
+
+测试名可以用中文，失败时打出来的就是它 —— 一眼看出哪条规则坏了。
+`assert_eq!(左, 右)`：左边是算出来的，右边是期望的，别写反。
+
+**写完测试把被测函数改坏一行**，看它会不会红。不红的测试什么都没保护。
 
 ## 闭包与迭代器（13）
 
@@ -359,7 +398,10 @@ tasks.into_iter()               // T     原列表被吃掉
 .find(|t| t.id == 3)            // 第一个 → Option<&T>
 .any(|t| !t.done)               // 有没有 → bool
 .all(|t| t.done)                // 是不是全都 → bool
-.max_by_key(|t| t.title.chars().count())
+.max_by_key(|t| t.title.chars().count())   // → Option，空列表没有最大值
+.min_by_key(|t| t.id)
+.position(|t| t.id == 3)        // 第几个 → Option<usize>
+.enumerate()                    // 配序号，从 0 开始
 .sum::<usize>()                 // 加起来
 .for_each(|t| println!("{t}"))
 .collect::<Vec<_>>()            // 收成 Vec

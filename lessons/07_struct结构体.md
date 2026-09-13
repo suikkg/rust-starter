@@ -47,7 +47,46 @@ impl Task {
 }
 ```
 
-`&self` / `&mut self` 就是上一课的借用规则用在自己身上。
+### 第一个参数决定这个函数怎么调
+
+`&self` / `&mut self` 就是上一课的借用规则**用在自己身上**：
+
+| 第一个参数 | 叫什么 | 怎么调 | 调完原件还在吗 |
+|---|---|---|---|
+| 没有 self | **关联函数** | `Task::new(1, "x")` | —— |
+| `&self` | 方法，只读 | `task.line()` | ✅ |
+| `&mut self` | 方法，要改 | `task.finish()` | ✅（而且被改了） |
+| `self` | 方法，**吃掉自己** | `task.into_parts()` | ❌ |
+
+前三种你天天用。第四种（直接写 `self`）表示「这个方法会把对象消耗掉」，
+常见于 `into_xxx` 这类转换函数 —— 现在只要认得出来就行。
+
+> **看第一个参数，就知道这个方法会不会动你的数据、调完还能不能用。**
+> 和上一课看函数签名是同一件事。
+
+### `Self` 是「当前这个类型」的简写
+
+```rust
+impl Task {
+    fn new(id: u32, title: &str) -> Self {       // Self 就是 Task
+        Self { id, title: title.to_string(), done: false }
+    }
+}
+```
+
+写 `Task` 还是 `Self` 都行，但**真实代码里几乎都写 `Self`** ——
+哪天类型改名了，`impl` 块里一个字都不用动。
+（隔壁 `cpe-mini` 里满屏都是 `Self`，先在这儿认个脸。）
+
+### 那个 `id,` 为什么没有值
+
+```rust
+Self { id, title: title.to_string(), done: false }
+//     ^^ 这里只写了字段名，没写值
+```
+
+**字段名和变量名一样时可以省略**，`id` 就是 `id: id` 的简写。
+不是笔误，是 Rust 的常用写法，读真实代码时到处都是。
 
 ## 4. derive 是什么
 
@@ -60,7 +99,43 @@ impl Task {
 - `Debug` → 可以用 `{:?}` 打印，调试时极其常用
 - `Clone` → 可以 `.clone()` 复制一份
 
-## 5. 动手任务
+还有几个后面会用到的，现在认个脸：
+
+| derive | 给你什么 | 什么时候加 |
+|---|---|---|
+| `Debug` | `{:?}` | **几乎总是加** |
+| `Clone` | `.clone()` | 要复制的时候 |
+| `PartialEq` | `==`、`assert_eq!` | 要比较、要写测试的时候 |
+| `Default` | `Task::default()` | 要「全是默认值的一个」的时候 |
+| `Copy` | 赋值不搬走（第 06 课） | 只有小的、纯数字的类型才配加 |
+
+**写测试时 `assert_eq!(a, b)` 要求两边能比较**，所以那时候得补上 `PartialEq`。
+第 12 课会撞上。
+
+`derive` 生成的代码是最朴素的那种（逐字段比较、逐字段复制）。
+不满意就自己写 —— 第 15 课讲怎么手写一个。
+
+## 5. 多个 impl 块、多个方法
+
+一个类型可以有好几个 `impl` 块，也可以一个块里放十个方法。
+惯例是**按职责分块**：
+
+```rust
+impl Task {          // 造和读
+    fn new(...) -> Self { }
+    fn line(&self) -> String { }
+}
+
+impl Task {          // 改
+    fn finish(&mut self) { }
+    fn rename(&mut self, title: &str) { }
+}
+```
+
+小程序不用分。知道可以分就行 —— 真实项目里一个类型有几百行方法时，
+分块是唯一能读下去的办法。
+
+## 6. 动手任务
 
 改 `src/main.rs`：
 
@@ -72,7 +147,7 @@ impl Task {
 
 额外挑战：加一个 `fn finish(&mut self)`，在 `main` 里把第一条标成完成。
 
-## 6. 验收
+## 7. 验收
 
 ```bash
 cargo run
@@ -81,8 +156,10 @@ cargo run
 - [ ] 程序里只剩一个 `Vec<Task>`，没有平行列表了
 - [ ] 用 `{:?}` 打印过一个 `Task`，看到了 `Task { id: 1, title: "...", done: false }`
 - [ ] 能说清 `Task::new(...)` 和 `task.line()` 这两种调用形式的区别
+- [ ] 知道 `Self` 是什么，也知道 `Task { id, ... }` 里那个光秃秃的 `id` 是什么意思
+- [ ] 看第一个参数就能说出这个方法会不会改数据
 
-## 7. 常见错误
+## 8. 常见错误
 
 ```
 error[E0599]: no method named `line` found ... `&mut` is required
@@ -93,6 +170,17 @@ error[E0599]: no method named `line` found ... `&mut` is required
 error[E0277]: `Task` doesn't implement `Debug`
 ```
 → 结构体上面漏了 `#[derive(Debug)]`。
+
+```
+error[E0308]: mismatched types  expected `String`, found `&str`
+```
+→ 字段是 `String`，参数收的是 `&str`。加 `.to_string()`。
+
+```
+error[E0425]: cannot find value `title` in this scope
+```
+→ 想用字段简写 `Task { title }`，但局部变量不叫 `title`。
+简写只在**名字一样**时能用，否则老实写 `title: 那个变量`。
 
 参考答案：`solutions/lesson07.md`
 

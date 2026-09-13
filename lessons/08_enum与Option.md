@@ -67,6 +67,29 @@ if let Some(t) = opt { }     // 只关心有值的情况
 在写给别人用的程序里，这句保证几乎总会被打脸。
 `unwrap_or` / `match` / `if let` 才是正路。
 
+### `Option` 上最常用的几个
+
+```rust
+let found: Option<&Task> = tasks.iter().find(|t| t.id == 3);
+
+found.is_some()                       // 有没有            → bool
+found.map(|t| t.title.clone())        // 有就变换一下       → Option<String>
+found.map_or("（没有）".to_string(),   // 有就变换、没有给默认 → String
+             |t| t.title.clone())
+found.unwrap_or(&fallback)            // 没有就用这个       → &Task
+found.and_then(|t| t.parent())        // 变换出来还是 Option → 摊平一层
+```
+
+`map` 和 `map_or` 差一个字，结果差一层：
+
+| | 返回 |
+|---|---|
+| `opt.map(f)` | `Option<新类型>` —— **还是 Option** |
+| `opt.map_or(默认, f)` | **新类型** —— 已经把 None 处理掉了 |
+
+想要「有就这样、没有就那样」并且**直接拿到结果**，用 `map_or`。
+练习第 4 题考的就是这个。
+
 ### 把字符串变成数字：`parse`
 
 用户从命令行敲进来的永远是字符串。转数字可能失败，所以 `parse` 返回
